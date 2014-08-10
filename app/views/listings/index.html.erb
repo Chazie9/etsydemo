@@ -8,21 +8,21 @@
     <div class="col-md-3">
       <div class="thumbnail">
        <%= link_to image_tag(listing.image.url), listing %>
-          <div class="caption">
         <div class="caption">
-          <h3><%= listing.name %></h3>
+          <h3><%= link_to listing.name, listing %></h3>
           <p><%= number_to_currency(listing.price) %></p>
-          <p><%= "Sold by #{listing.user.name}" %></p>
-        </div>
-      </div>
-    </div>
-  <% end %>
-  </div>
-</div>
+          
+            <% if (user_signed_in?) && (current_user == listing.user) %>
+              <%= link_to 'Edit', edit_listing_path(listing), class: "btn btn-link" %> 
+            <% end %>
+         
+      
+ 
+    <% end %>
 
+ 
 
-<br>
-
-<% if user_signed_in? %>
+<% if (user_signed_in?) %>
   <%= link_to 'New Listing', new_listing_path, class: "btn btn-link" %>
 <% end %>
+<end>
