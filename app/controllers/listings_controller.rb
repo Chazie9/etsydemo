@@ -3,14 +3,14 @@ class ListingsController < ApplicationController
   before_filter :authenticate_user!, only: [:seller, :new, :create, :edit, :update, :destroy]
   before_filter :check_user, only: [:edit, :update, :destroy]
   
-  def deller
-    @listings = listing.where(user: current_user).order("created_at DESC")
+  def seller
+    @listings = Listing.where(user: current_user).order("created_at DESC")
   end
 
   # GET /listings
   # GET /listings.json
   def index
-    @listings = Listing.all.order("created_at DESC")
+    @listings = Listing.all
   end
 
   # GET /listings/1
@@ -31,8 +31,8 @@ class ListingsController < ApplicationController
   # POST /listings
   # POST /listings.json
   def create
-    @listing = Listing.new( listing_params )
-    @listing.user_id = current_user.id
+    @listing = Listing.new(listing_params)
+    
     respond_to do |format|
       if @listing.save
         format.html { redirect_to @listing, notice: 'Listing was successfully created.' }
@@ -43,14 +43,13 @@ class ListingsController < ApplicationController
       end
     end
   end
-
   # PATCH/PUT /listings/1
   # PATCH/PUT /listings/1.json
   def update
     respond_to do |format|
       if @listing.update(listing_params)
         format.html { redirect_to @listing, notice: 'Listing was successfully updated.' }
-        format.json { render :show, status: :ok, location: @listing }
+        format.json { head :no_content }
       else
         format.html { render :edit }
         format.json { render json: @listing.errors, status: :unprocessable_entity }
@@ -76,12 +75,6 @@ class ListingsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def listing_params
-      params.require(:listing).permit(:name, :description, :price, :image)
-      
-      def check_user
-      if current_user != @listing.user
-        redirect_to root_url, alert: "Sorry, this listing belongs to someone else"
-      end
+      params.require(:listing).permit(:name, :description, :price, :image, :user_id)
     end
- end
 end
